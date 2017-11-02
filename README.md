@@ -30,15 +30,23 @@
 将`cn_zipline/extension.py`拷贝至zipline的数据目录,默认为`~/.zipline`
     
 ## 使用：
-cn_zipline与zipline大同小异，具体使用方法请参考zipline[官方文档](http://zipline.io/)。不同之处在于，`ingest`数据时请使用
+cn_zipline与zipline大同小异，具体使用方法请参考zipline[官方文档](https://www.quantopian.com/tutorials/getting-started)。不同之处在于，`ingest`数据时请使用
 `cn_zipline`命令，管理以及清理`bundls`数据时使用`zipline`。运行策略的形式也不同，为便于调试代码，采用直接运行策略脚本，
 而**不是**通过`zipline run`命令来运行。下面是使用示例：
 
-ingest数据：
+#### 一：ingest数据(二选一)：
+
+
+##### 1.命令行
 
     cn_zipline ingest -b tdx
-    
-编辑策略`cn_zipline/examples/buyapply.py`：
+
+##### 2.下载解压
+
+链接:https://pan.baidu.com/s/1o81cC5s 密码:`74m6` 下载后解压到`~/.zipline/data/tdx` **注意**：这个数据截止到17年11月1日。
+
+
+#### 二：编写策略`cn_zipline/examples/buyapply.py`：
 
     from zipline.api import order, record, symbol
 
@@ -61,7 +69,7 @@ ingest数据：
     
         end = Date(tz='utc', as_timestamp=True).parser('2017-10-20')
         run_algorithm(start, end, initialize, 10e6, handle_data=handle_data, bundle='tdx',trading_calendar=shsz_calendar,output='out.pickle')
-       
-运行策略文件 `cn_zipline/examples/buyapply.py`
+       
+#### 三：运行策略文件 `cn_zipline/examples/buyapply.py`
 
-运行分析脚本`cn_zipline/examples/analyse.py`
+#### 四：运行分析脚本`cn_zipline/examples/analyse.py`
