@@ -24,8 +24,12 @@ SCALED_COLUMNS = [
 ]
 
 
-def fetch_symbols(engine):
-    stock_list = engine.stock_list
+def fetch_symbols(engine,assets):
+    if assets:
+        stock_list = engine.security_list
+        stock_list = stock_list[stock_list.code.isin(assets)]
+    else:
+        stock_list = engine.stock_list
     symbols = pd.DataFrame()
     symbols['symbol'] = stock_list.code
     symbols['asset_name'] = stock_list.name
@@ -96,7 +100,8 @@ def reindex_to_calendar(calendar, data, freq='1d'):
     return data.reindex(all_sessions, copy=False).fillna(0.0)
 
 
-def tdx_bundle(environ,
+def tdx_bundle(assets,
+               environ,
                asset_db_writer,
                minute_bar_writer,
                daily_bar_writer,
@@ -110,7 +115,7 @@ def tdx_bundle(environ,
     eg = Engine(auto_retry=True, multithread=True, best_ip=True, thread_num=8)
     eg.connect()
 
-    symbols = fetch_symbols(eg)
+    symbols = fetch_symbols(eg,assets)
     metas = []
 
     def gen_symbols_data(symbol_map, freq='1d'):

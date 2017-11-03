@@ -4,6 +4,7 @@ from zipline.data import bundles as bundles_module
 from cn_zipline.bundles.tdx_bundle import tdx_bundle
 import pandas as pd
 import os
+from functools import partial
 import cn_stock_holidays.zipline.default_calendar
 
 
@@ -22,6 +23,18 @@ def main():
     help='The data bundle to ingest.',
 )
 @click.option(
+    '-a',
+    '--assets',
+    default=None,
+    help='a file contains list of assets to ingest. the file have tow columns, separated by comma'
+         'symbol: code of asset,'
+         'name:   name of asset,'
+         'examples:'
+         '  510050,50ETF'
+         '  510500,500ETF'
+         '  510300,300ETF',
+)
+@click.option(
     '--assets-version',
     type=int,
     multiple=True,
@@ -32,9 +45,17 @@ def main():
     default=True,
     help='Print progress information to the terminal.'
 )
-def ingest(bundle, assets_version, show_progress):
+def ingest(bundle, assets, assets_version, show_progress):
     if bundle == 'tdx':
-        register('tdx', tdx_bundle, 'SHSZ')
+        if assets:
+            if not os.path.exists(assets):
+                raise FileNotFoundError
+            df = pd.read_csv(assets, names=['symbol', 'name'],dtype=str)
+            assets = df['symbol'].tolist()
+            register('tdx', partial(tdx_bundle, assets), 'SHSZ')
+        else:
+            register('tdx', partial(tdx_bundle, None), 'SHSZ')
+
     bundles_module.ingest(bundle,
                           os.environ,
                           pd.Timestamp.utcnow(),
@@ -48,7 +69,17 @@ def register_tdx():
 
 
 if __name__ == '__main__':
-    register('tdx', tdx_bundle, 'SHSZ')
+    import sys
+
+    if sys.argv[1]:
+        assets = sys.argv[1]
+        if not os.path.exists(assets):
+            raise FileNotFoundError
+        df = pd.read_csv(assets, names=['symbol', 'name'],dtype=str)
+        assets = df['symbol'].tolist()
+        register('tdx', partial(tdx_bundle, assets), 'SHSZ')
+    else:
+        register('tdx', partial(tdx_bundle, None), 'SHSZ')
     bundles_module.ingest('tdx',
                           os.environ,
                           pd.Timestamp.utcnow(),

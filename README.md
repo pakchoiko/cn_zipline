@@ -19,34 +19,46 @@
 `zipline`的基本使用方法在https://www.quantopian.com/tutorials/getting-started ，对于zipline的深度解析，可以看大神[rainx](https://github.com/rainx)写的[文档](https://www.gitbook.com/book/rainx/-zipline/details)，本项目中的大部分依赖项目也都是rainx开发的项目
 `
 
-## 数据源：
+数据源
+--------
+
 `cn_zipline`的历史k线以及除息除权数据来自通达信，数据接口来自项目github 项目tdx https://github.com/JaysonAlbert/tdx 
 
-## 安装：
+安装
+----------
 
     pip install cn_zipline
 **注意**：在`windows`上，如果`zipline`安装失败，先用`conda install -c Quantopian zipline`安装`zipline`,然后再安装`cn_zipline`
     
 将`cn_zipline/extension.py`拷贝至zipline的数据目录,默认为`~/.zipline`
-    
-## 使用：
+
+ 
+使用
+----------
+
 cn_zipline与zipline大同小异，具体使用方法请参考zipline[官方文档](https://www.quantopian.com/tutorials/getting-started)。不同之处在于，`ingest`数据时请使用
 `cn_zipline`命令，管理以及清理`bundls`数据时使用`zipline`。运行策略的形式也不同，为便于调试代码，采用直接运行策略脚本，
 而**不是**通过`zipline run`命令来运行。下面是使用示例：
 
-#### 一：ingest数据(二选一)：
+
+一、ingest数据(二选一)：
+-----------
 
 
 ##### 1.命令行
 
-    cn_zipline ingest -b tdx
+    cn_zipline ingest -b tdx -a assets.csv
+    
+`assets.csv`指定需要`ingest`的股票，缺省`-a`则ingest 4000+只所有股票，耗时长达3、4小时，通过`-a tests/ETF.csv` 只ingest ETF基金数据，一方面可以节省时间达到快速测试的目的。
+另一方面可以通过这种方法ingest非股票数据，例如etf基金。
 
 ##### 2.下载解压
 
 链接:https://pan.baidu.com/s/1o81cC5s 密码:`74m6` 下载后解压到`~/.zipline/data/tdx` **注意**：这个数据截止到17年11月1日。
 
 
-#### 二：编写策略`cn_zipline/examples/buyapply.py`：
+二、编写策略`cn_zipline/examples/buyapply.py`：
+-----------
 
     from zipline.api import order, record, symbol
 
@@ -70,6 +82,20 @@ cn_zipline与zipline大同小异，具体使用方法请参考zipline[官方文�
         end = Date(tz='utc', as_timestamp=True).parser('2017-10-20')
         run_algorithm(start, end, initialize, 10e6, handle_data=handle_data, bundle='tdx',trading_calendar=shsz_calendar,output='out.pickle')
        
-#### 三：运行策略文件 `cn_zipline/examples/buyapply.py`
 
-#### 四：运行分析脚本`cn_zipline/examples/analyse.py`
+三、运行策略文件 `cn_zipline/examples/buyapply.py`
+------------
+
+四、运行分析脚本`cn_zipline/examples/analyse.py`
+------------
+
+Questions?
+-----------
+
+If you find a bug, feel free to [open an issue](https://github.com/JaysonAlbert/cn_zipline/issues/new)
+
+
+Contributing
+--------------
+
+All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
