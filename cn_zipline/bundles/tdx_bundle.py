@@ -3,6 +3,7 @@ import pandas as pd
 from collections import OrderedDict
 import numpy as np
 import click
+import pytz
 
 OHLC_RATIO = 1000
 DAY_BARS_COLUMNS = [
@@ -28,22 +29,22 @@ def fetch_symbols(engine):
     symbols = pd.DataFrame()
     symbols['symbol'] = stock_list.code
     symbols['asset_name'] = stock_list.name
-    symbols['exchange'] = ['sz' if i == 0 else 'sh' for i in stock_list.sse]
+    symbols['exchange'] = 'SHSZ'  # calendar name
     return symbols.reset_index()
 
 
 def fetch_single_equity(engine, symbol, freq='1d'):
     df = engine.get_security_bars(symbol, freq)
     df['volume'] = df['vol'].astype(np.int32)
-    for col in SCALED_COLUMNS:
-        df[col] = (df[col] * 1000).astype(np.int32)
+    # for col in SCALED_COLUMNS:
+    #     df[col] = (df[col] * 1000).astype(np.int32)
 
     if freq == '1d':
         df.index = df['day'] = df.index.shift(-15, '1H')  # change datetime at 15:00 to midnight
         df['id'] = int(symbol)
         df.day = df.day.values.astype('datetime64[m]').astype(np.int64)
-    else:
-        df.index = df.index.values.astype('datetime64[m]').astype(np.int64)
+    # else:
+    #     df.index = df.index.values.astype('datetime64[m]').astype(np.int64)
     return df.drop(['vol', 'amount', 'code'], axis=1)
 
 
@@ -81,14 +82,18 @@ def get_meta_from_bars(df):
 def reindex_to_calendar(calendar, data, freq='1d'):
     start_session, end_session = data.index[[0, -1]]
     if not isinstance(start_session, pd.Timestamp):
-        start_session = pd.Timestamp(start_session, unit='m').round('D')
-        end_session = pd.Timestamp(end_session, unit='m').round('D')
+        start_session = pd.Timestamp(start_session, unit='m')
+        end_session = pd.Timestamp(end_session, unit='m')
+
+    start_session = start_session.normalize()
+    end_session = end_session.normalize()
 
     if freq == '1d':
-        all_sessions = calendar.sessions_in_range(start_session, end_session)
+        all_sessions = calendar.sessions_in_range(start_session, end_session).tz_localize(None)
     else:
-        all_sessions = calendar.minutes_for_sessions_in_range(start_session, end_session)
-    return data.reindex(all_sessions.tz_localize(None), copy=False).fillna(0.0)
+        all_sessions = calendar.minutes_for_sessions_in_range(start_session, end_session).tz_localize(None)
+        data.index = data.index.tz_localize(pytz.timezone('Asia/Shanghai')).tz_convert('UTC').tz_localize(None)
+    return data.reindex(all_sessions, copy=False).fillna(0.0)
 
 
 def tdx_bundle(environ,

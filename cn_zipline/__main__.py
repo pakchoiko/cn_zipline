@@ -4,7 +4,7 @@ from zipline.data import bundles as bundles_module
 from cn_zipline.bundles.tdx_bundle import tdx_bundle
 import pandas as pd
 import os
-from cn_stock_holidays.zipline.default_calendar import register_calendar
+import cn_stock_holidays.zipline.default_calendar
 
 
 @click.group()
@@ -48,8 +48,8 @@ def register_tdx():
 
 
 if __name__ == '__main__':
-    register('tdx1', tdx_bundle, 'SHSZ')
-    bundles_module.ingest('tdx1',
+    register('tdx', tdx_bundle, 'SHSZ')
+    bundles_module.ingest('tdx',
                           os.environ,
                           pd.Timestamp.utcnow(),
                           show_progress=True,
