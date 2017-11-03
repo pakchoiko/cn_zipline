@@ -13,7 +13,7 @@ except (IOError, ImportError):
 
 setup(
     name='cn-zipline',
-    version='0.25',
+    version='0.26',
     description='china zipline bundles',
     long_description=long_description,
     author='Jie Wang',

@@ -24,7 +24,7 @@ SCALED_COLUMNS = [
 ]
 
 
-def fetch_symbols(engine,assets):
+def fetch_symbols(engine,assets=None):
     if assets:
         stock_list = engine.security_list
         stock_list = stock_list[stock_list.code.isin(assets)]
