@@ -27,6 +27,7 @@ setup(
     },
 
     install_requires=[
+        'tables',
         'numpy',
         'zipline',
         'pytdx',
