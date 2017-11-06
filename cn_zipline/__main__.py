@@ -37,6 +37,7 @@ def main():
 @click.option(
     '--minute',
     default=False,
+    type = bool,
     help='whether to ingest minute, default False',
 )
 @click.option(
