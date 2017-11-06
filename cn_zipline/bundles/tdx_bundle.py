@@ -101,6 +101,7 @@ def reindex_to_calendar(calendar, data, freq='1d'):
 
 
 def tdx_bundle(assets,
+               ingest_minute, # whether to ingest minute data, default False
                environ,
                asset_db_writer,
                minute_bar_writer,
@@ -133,12 +134,14 @@ def tdx_bundle(assets,
 
     assets = set([int(s) for s in symbol_map])
     daily_bar_writer.write(gen_symbols_data(symbol_map, freq="1d"), assets=assets, show_progress=show_progress)
-    with click.progressbar(gen_symbols_data(symbol_map, freq="1m"),
-                           label="Merging minute equity files:",
-                           length=len(assets),
-                           item_show_func=lambda e: e if e is None else str(e[0]),
-                           ) as bar:
-        minute_bar_writer.write(bar, show_progress=False)
+
+    if ingest_minute:
+        with click.progressbar(gen_symbols_data(symbol_map, freq="1m"),
+                               label="Merging minute equity files:",
+                               length=len(assets),
+                               item_show_func=lambda e: e if e is None else str(e[0]),
+                               ) as bar:
+            minute_bar_writer.write(bar, show_progress=False)
 
     symbols = pd.concat([symbols, pd.DataFrame(data=metas)], axis=1)
     splits, dividends = fetch_splits_and_dividends(eg, symbols)

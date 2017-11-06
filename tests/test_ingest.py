@@ -6,7 +6,7 @@ from zipline.data import bundles as bundles_module
 from functools import partial
 
 
-def target_ingest(assets):
+def target_ingest(assets,ingest_minute=False):
     import cn_stock_holidays.zipline.default_calendar
 
     if assets:
@@ -14,9 +14,9 @@ def target_ingest(assets):
             raise FileNotFoundError
         df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str)
         assets = df['symbol'].tolist()
-        register('tdx', partial(tdx_bundle, assets[:1]), 'SHSZ')
+        register('tdx', partial(tdx_bundle, assets[:1],ingest_minute), 'SHSZ')
     else:
-        register('tdx', partial(tdx_bundle, ['000521']), 'SHSZ')
+        register('tdx', partial(tdx_bundle, ['000521'],ingest_minute), 'SHSZ')
 
     bundles_module.ingest('tdx',
                           os.environ,
@@ -26,5 +26,5 @@ def target_ingest(assets):
 
 
 def test_target_ingest():
-    yield target_ingest,'tests/ETF.csv'
-    yield target_ingest,None
+    yield target_ingest,'tests/ETF.csv',True
+    yield target_ingest,None,False

@@ -35,6 +35,11 @@ def main():
          '  510300,300ETF',
 )
 @click.option(
+    '--minute',
+    default=False,
+    help='whether to ingest minute, default False',
+)
+@click.option(
     '--assets-version',
     type=int,
     multiple=True,
@@ -45,16 +50,16 @@ def main():
     default=True,
     help='Print progress information to the terminal.'
 )
-def ingest(bundle, assets, assets_version, show_progress):
+def ingest(bundle, assets,minute ,assets_version, show_progress):
     if bundle == 'tdx':
         if assets:
             if not os.path.exists(assets):
                 raise FileNotFoundError
             df = pd.read_csv(assets, names=['symbol', 'name'],dtype=str)
             assets = df['symbol'].tolist()
-            register('tdx', partial(tdx_bundle, assets), 'SHSZ')
+            register('tdx', partial(tdx_bundle, assets,minute), 'SHSZ')
         else:
-            register('tdx', partial(tdx_bundle, None), 'SHSZ')
+            register('tdx', partial(tdx_bundle, None,minute), 'SHSZ')
 
     bundles_module.ingest(bundle,
                           os.environ,
@@ -65,7 +70,7 @@ def ingest(bundle, assets, assets_version, show_progress):
 
 
 def register_tdx():
-    register('tdx', tdx_bundle, 'SHSZ')
+    register('tdx', partial(tdx_bundle,None,False), 'SHSZ')
 
 
 if __name__ == '__main__':
@@ -77,9 +82,9 @@ if __name__ == '__main__':
             raise FileNotFoundError
         df = pd.read_csv(assets, names=['symbol', 'name'],dtype=str)
         assets = df['symbol'].tolist()
-        register('tdx', partial(tdx_bundle, assets), 'SHSZ')
+        register('tdx', partial(tdx_bundle, assets,False), 'SHSZ')
     else:
-        register('tdx', partial(tdx_bundle, None), 'SHSZ')
+        register('tdx', partial(tdx_bundle, None,False), 'SHSZ')
     bundles_module.ingest('tdx',
                           os.environ,
                           pd.Timestamp.utcnow(),
