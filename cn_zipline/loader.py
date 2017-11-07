@@ -82,7 +82,7 @@ def has_data_for_dates(series_or_df, first_date, last_date):
     return last >= last_date
 
 
-def load_market_data(trading_day=None, trading_days=None, bm_symbol='000001', trading_day_before=2):
+def load_market_data(trading_day=None, trading_days=None, bm_symbol='000001', trading_day_before=1):
     """
     Load benchmark returns and treasury yield curves for the given calendar and
     benchmark symbol.
@@ -146,7 +146,7 @@ def load_market_data(trading_day=None, trading_days=None, bm_symbol='000001', tr
 
     # We'll attempt to download new data if the latest entry in our cache is
     # before this date.
-    last_date = trading_days[trading_days.get_loc(now, method='ffill') - trading_day_before]
+    last_date = trading_days[trading_days.get_loc(now, method='bfill') - trading_day_before]
 
     br = ensure_benchmark_data(
         bm_symbol,

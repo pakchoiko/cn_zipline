@@ -4,7 +4,7 @@ from zipline.api import order, record, symbol
 
 
 def initialize(context):
-    context.smb = symbol('AAPL')
+    context.smb = symbol('000001')
 
 
 def handle_data(context, data):
@@ -19,7 +19,7 @@ def handle_data(context, data):
         volume = data.current(context.smb, 'volume')
         price = data.current(context.smb,'price')
 
-        record(AAPL=data.current(context.smb, 'price'))
+        record(price=data.current(context.smb, 'price'))
 
 
 if __name__ == '__main__':
@@ -31,5 +31,5 @@ if __name__ == '__main__':
 
     end = Date(tz='utc', as_timestamp=True).parser('2017-11-01')
 
-    run_algorithm(start, end, initialize, 10e6, handle_data=handle_data, bundle='tdx',trading_calendar=shsz_calendar,data_frequency="minute", output='out.pickle')
+    run_algorithm(start, end, initialize, 10e6, handle_data=handle_data, bundle='tdx',trading_calendar=shsz_calendar,data_frequency="daily", output='out.pickle')
     # run_algorithm(start, end, initialize, 10e6, handle_data=handle_data)
