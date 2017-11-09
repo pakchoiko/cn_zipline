@@ -9,7 +9,7 @@ environment:
       PY_CONDITION: "python >=3.5,<3.6"
 
 init:
-- cmd: pip install nose numpy
+- cmd: pip install nose numpy h5py
 build_script:
 - cmd: pip install .
 test_script:
