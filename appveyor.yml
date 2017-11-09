@@ -5,8 +5,8 @@ environment:
     - PYTHON: "C:\\Python35"
 
 init:
-- cmd: pip install nose numpy
-- cmd: pip install -c Quantopian zipline
+- cmd: pip install nose numpy conda
+- cmd: conda install -c Quantopian zipline
 build_script:
 - cmd: pip install .
 test_script:
