@@ -10,7 +10,6 @@ environment:
 
 init:
 - cmd: pip install nose
-- cmd: conda install -c Quantopian zipline
 build_script:
 - cmd: pip install .
 test_script:
