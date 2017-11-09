@@ -1,3 +1,4 @@
+# encoding: UTF-8
 from tdx.engine import Engine
 from cn_zipline.bundles.tdx_bundle import *
 import os
