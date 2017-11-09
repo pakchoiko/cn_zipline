@@ -27,6 +27,7 @@ SCALED_COLUMNS = [
 def fetch_symbols(engine,assets=None):
     if assets is not None:
         stock_list = engine.security_list
+        stock_list.name = stock_list.name.str.rstrip("\x00")
         stock_list = stock_list[stock_list.code.isin(assets.symbol)]
         stock_list = stock_list[stock_list.name.isin(assets.name)]
     else:
