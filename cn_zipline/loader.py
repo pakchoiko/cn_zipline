@@ -238,7 +238,7 @@ def ensure_benchmark_data(symbol, first_date, last_date, now, trading_day):
     engine.connect()
     data = engine.get_security_bars(symbol, '1d',index=True)
     data = data['close'].sort_index().tz_localize('UTC').pct_change(1).iloc[1:]
-    data.index = data.index.shift(-15,'1H') # change datetime at 15:00 to midnight
+    data.index = data.index.normalize() # change datetime at 15:00 to midnight
     data.to_csv(path)
     return data
 

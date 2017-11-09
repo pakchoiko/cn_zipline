@@ -8,7 +8,6 @@
 [![Py version](https://img.shields.io/pypi/pyversions/cn-zipline.svg)](https://pypi.python.org/pypi/cn-zipline)
 [![Build Status](https://travis-ci.org/JaysonAlbert/cn_zipline.svg?branch=master)](https://travis-ci.org/JaysonAlbert/cn_zipline)
 [![Build status](https://ci.appveyor.com/api/projects/status/b0pf9nndpj65x0nj/branch/master?svg=true)](https://ci.appveyor.com/project/JaysonAlbert/cn-zipline/branch/master)
-[![Coverage Status](https://coveralls.io/repos/github/JaysonAlbert/cn_zipline/badge.svg?branch=master)](https://coveralls.io/github/JaysonAlbert/cn_zipline?branch=master)
 
 基于tdx的zipline bundle.
 
@@ -22,7 +21,29 @@
 数据源
 --------
 
-`cn_zipline`的历史k线以及除息除权数据来自通达信，数据接口来自项目github 项目tdx https://github.com/JaysonAlbert/tdx 
+`cn_zipline`的历史k线以及除息除权数据来自通达信，数据接口来自项目github 项目tdx https://github.com/JaysonAlbert/tdx
+
+环境 
+--------
+
+python2.7或者python3.5，尽量使用较新版本的Anaconda。旧版本的在安装依赖时容易报错。推荐使用python3.5，数据获取的接口依赖于python3.5的
+一些库，用于提升性能。
+
+**注意**：Anaconda官网提供的链接，3.x版本默认下载python3.6。
+
+如何用anaconda安装其它版本的python:
+
+新建环境：
+
+`conda create --name=py35 python=3.5`
+
+激活环境：
+
+`activate py35`
+
+取消环境:
+
+`deactivate py35`
 
 安装
 ----------
@@ -84,13 +105,11 @@ cn_zipline与zipline大同小异，具体使用方法请参考zipline[官方文�
 四、运行分析脚本`cn_zipline/examples/analyse.py`
 ------------
 
-Questions?
------------
-
-If you find a bug, feel free to [open an issue](https://github.com/JaysonAlbert/cn_zipline/issues/new)
-
-
-Contributing
+问题
 --------------
 
-All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
+如有任何问题，欢迎大家提交[issue](https://github.com/JaysonAlbert/cn_zipline/issues/new) ，反馈bug，以及提出改进建议。
+
+其它
+--------------
+对量化感兴趣的朋友，同时便于更方便的交流请加QQ群434588628

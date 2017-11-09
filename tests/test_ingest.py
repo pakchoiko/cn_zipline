@@ -13,10 +13,13 @@ def target_ingest(assets,ingest_minute=False):
         if not os.path.exists(assets):
             raise FileNotFoundError
         df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str)
-        assets = df['symbol'].tolist()
-        register('tdx', partial(tdx_bundle, assets[:1],ingest_minute), 'SHSZ')
+        register('tdx', partial(tdx_bundle, df[:1],ingest_minute), 'SHSZ')
     else:
-        register('tdx', partial(tdx_bundle, ['000521'],ingest_minute), 'SHSZ')
+        df = pd.DataFrame({
+            'symbol':['000001'],
+            'name':['平安银行']
+        })
+        register('tdx', partial(tdx_bundle, df,ingest_minute), 'SHSZ')
 
     bundles_module.ingest('tdx',
                           os.environ,

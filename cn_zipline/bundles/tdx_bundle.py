@@ -25,9 +25,10 @@ SCALED_COLUMNS = [
 
 
 def fetch_symbols(engine,assets=None):
-    if assets:
+    if assets is not None:
         stock_list = engine.security_list
-        stock_list = stock_list[stock_list.code.isin(assets)]
+        stock_list = stock_list[stock_list.code.isin(assets.symbol)]
+        stock_list = stock_list[stock_list.name.isin(assets.name)]
     else:
         stock_list = engine.stock_list
     symbols = pd.DataFrame()
@@ -40,15 +41,10 @@ def fetch_symbols(engine,assets=None):
 def fetch_single_equity(engine, symbol, freq='1d'):
     df = engine.get_security_bars(symbol, freq)
     df['volume'] = df['vol'].astype(np.int32)
-    # for col in SCALED_COLUMNS:
-    #     df[col] = (df[col] * 1000).astype(np.int32)
 
     if freq == '1d':
-        df.index = df['day'] = df.index.shift(-15, '1H')  # change datetime at 15:00 to midnight
+        df.index = df.index.normalize()  # change datetime at 15:00 to midnight
         df['id'] = int(symbol)
-        df.day = df.day.values.astype('datetime64[m]').astype(np.int64)
-    # else:
-    #     df.index = df.index.values.astype('datetime64[m]').astype(np.int64)
     return df.drop(['vol', 'amount', 'code'], axis=1)
 
 
@@ -94,10 +90,22 @@ def reindex_to_calendar(calendar, data, freq='1d'):
 
     if freq == '1d':
         all_sessions = calendar.sessions_in_range(start_session, end_session).tz_localize(None)
+        df = data.reindex(all_sessions, copy=False)
+        mask = pd.isnull(df.close)
+        df.close.fillna(method='pad', inplace=True)
+        df.id.fillna(method='pad', inplace=True)
+        df.volume.fillna(0,inplace=True)
+        df.loc[mask, ["high", "low", "open"]] = df.close[mask]
+        df.day = df.index.values.astype('datetime64[m]').astype(np.int64)
     else:
         all_sessions = calendar.minutes_for_sessions_in_range(start_session, end_session).tz_localize(None)
         data.index = data.index.tz_localize(pytz.timezone('Asia/Shanghai')).tz_convert('UTC').tz_localize(None)
-    return data.reindex(all_sessions, copy=False).fillna(0.0)
+        df = data.reindex(all_sessions, copy=False)
+        mask = pd.isnull(df.close)
+        df.close.fillna(method='pad', inplace=True)
+        df.loc[mask, ["high", "low", "open"]] = df.close[mask]
+
+    return df
 
 
 def tdx_bundle(assets,
