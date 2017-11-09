@@ -12,7 +12,7 @@ def target_ingest(assets,ingest_minute=False):
     if assets:
         if not os.path.exists(assets):
             raise FileNotFoundError
-        df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str)
+        df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str,encoding='utf8')
         register('tdx', partial(tdx_bundle, df[:1],ingest_minute), 'SHSZ')
     else:
         df = pd.DataFrame({

@@ -56,7 +56,7 @@ def ingest(bundle, assets, minute, assets_version, show_progress):
         if assets:
             if not os.path.exists(assets):
                 raise FileNotFoundError
-            df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str, encoding='gbk')
+            df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str, encoding='utf8')
             register('tdx', partial(tdx_bundle, df, minute), 'SHSZ')
         else:
             register('tdx', partial(tdx_bundle, None, minute), 'SHSZ')
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         assets = sys.argv[1]
         if not os.path.exists(assets):
             raise FileNotFoundError
-        df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str, encoding='gbk')
+        df = pd.read_csv(assets, names=['symbol', 'name'], dtype=str, encoding='utf8')
         register('tdx', partial(tdx_bundle, df, False), 'SHSZ')
     else:
         register('tdx', partial(tdx_bundle, None, False), 'SHSZ')
