@@ -6,6 +6,7 @@ environment:
 
 init:
 - cmd: pip install nose numpy
+- cmd: pip install -c Quantopian zipline
 build_script:
 - cmd: pip install .
 test_script:
