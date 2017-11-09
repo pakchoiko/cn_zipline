@@ -1,8 +1,12 @@
 environment:
 
   matrix:
-    - PYTHON: "C:\\Python27"
-    - PYTHON: "C:\\Python35"
+    - TARGET_ARCH: "x64"
+      CONDA_PY: "27"
+      PY_CONDITION: "python >=2.7,<3"
+    - TARGET_ARCH: "x64"
+      CONDA_PY: "35"
+      PY_CONDITION: "python >=3.5,<3.6"
 
 init:
 - cmd: pip install nose numpy conda
