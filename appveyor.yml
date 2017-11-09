@@ -9,7 +9,7 @@ environment:
       PY_CONDITION: "python >=3.5,<3.6"
 
 init:
-- cmd: pip install nose numpy conda
+- cmd: pip install nose
 - cmd: conda install -c Quantopian zipline
 build_script:
 - cmd: pip install .
