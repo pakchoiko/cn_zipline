@@ -1,8 +1,8 @@
 import os
 import re
-from runpy import run_path
 import sys
 import warnings
+from runpy import run_path
 
 import click
 
@@ -16,7 +16,7 @@ except:
     PYGMENTS = False
 from toolz import valfilter, concatv
 
-from zipline.algorithm import TradingAlgorithm
+from cn_zipline.algorithm import CnTradingAlgorithm
 from zipline.data.bundles.core import load
 from zipline.data.data_portal import DataPortal
 from zipline.finance.trading import TradingEnvironment
@@ -163,7 +163,7 @@ def _run(handle_data,
     if not trading_calendar:
         trading_calendar = get_calendar('SHSZ')
 
-    perf = TradingAlgorithm(
+    perf = CnTradingAlgorithm(
         namespace=namespace,
         env=env,
         get_pipeline_loader=choose_loader,

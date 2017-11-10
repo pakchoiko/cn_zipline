@@ -24,7 +24,7 @@ SCALED_COLUMNS = [
 ]
 
 
-def fetch_symbols(engine,assets=None):
+def fetch_symbols(engine, assets=None):
     if assets is not None:
         stock_list = engine.security_list
         stock_list.name = stock_list.name.str.rstrip("\x00")
@@ -41,7 +41,7 @@ def fetch_symbols(engine,assets=None):
 
 def fetch_single_equity(engine, symbol, freq='1d'):
     df = engine.get_security_bars(symbol, freq)
-    df['volume'] = df['vol'].astype(np.int32)
+    df['volume'] = df['vol'].astype(np.int32) * 100  # hands * 100 == shares
 
     if freq == '1d':
         df.index = df.index.normalize()  # change datetime at 15:00 to midnight
@@ -95,7 +95,7 @@ def reindex_to_calendar(calendar, data, freq='1d'):
         mask = pd.isnull(df.close)
         df.close.fillna(method='pad', inplace=True)
         df.id.fillna(method='pad', inplace=True)
-        df.volume.fillna(0,inplace=True)
+        df.volume.fillna(0, inplace=True)
         df.loc[mask, ["high", "low", "open"]] = df.close[mask]
         df.day = df.index.values.astype('datetime64[m]').astype(np.int64)
     else:
@@ -110,7 +110,7 @@ def reindex_to_calendar(calendar, data, freq='1d'):
 
 
 def tdx_bundle(assets,
-               ingest_minute, # whether to ingest minute data, default False
+               ingest_minute,  # whether to ingest minute data, default False
                environ,
                asset_db_writer,
                minute_bar_writer,
@@ -125,7 +125,7 @@ def tdx_bundle(assets,
     eg = Engine(auto_retry=True, multithread=True, best_ip=True, thread_num=8)
     eg.connect()
 
-    symbols = fetch_symbols(eg,assets)
+    symbols = fetch_symbols(eg, assets)
     metas = []
 
     def gen_symbols_data(symbol_map, freq='1d'):

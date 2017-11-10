@@ -1,2 +1,2 @@
 
-from cn_zipline.utils.algorithm import *
+from cn_zipline.algorithm import *
