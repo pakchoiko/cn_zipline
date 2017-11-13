@@ -32,7 +32,7 @@ class CloseVolumeShareSlippage(SlippageModel):
 
         # can use the close price, since we verified there's volume in this
         # bar.
-        price = data.current(asset, "close")
+        price = data.current(asset, "open")
 
         # BEGIN
         #
@@ -98,7 +98,7 @@ class CloseVolumeShareSlippage(SlippageModel):
         volume_share = min(total_volume / volume,
                            self.volume_limit)
 
-        price = data.current(order.asset, "close")
+        price = data.current(order.asset, "open")
 
         # BEGIN
         #
