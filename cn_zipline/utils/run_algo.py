@@ -25,6 +25,9 @@ from zipline.pipeline.loaders import USEquityPricingLoader
 from zipline.utils.calendars import get_calendar
 from zipline.utils.factory import create_simulation_parameters
 import zipline.utils.paths as pth
+from cn_zipline.finance.slippage import CloseVolumeShareSlippage
+from zipline.finance.blotter import Blotter
+from zipline.finance.cancel_policy import NeverCancel
 
 from cn_zipline.loader import load_market_data
 
@@ -174,6 +177,12 @@ def _run(handle_data,
             capital_base=capital_base,
             data_frequency=data_frequency,
             trading_calendar=trading_calendar,
+        ),
+        blotter=Blotter(
+            data_frequency=data_frequency,
+            equity_slippage = CloseVolumeShareSlippage(),
+            # Default to NeverCancel in zipline
+            cancel_policy=NeverCancel(),
         ),
         **{
             'initialize': initialize,
