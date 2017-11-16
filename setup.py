@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from setuptools import setup, find_packages
-
+import distutils.sysconfig
+from setuptools import setup, find_packages, Extension
 
 try:
     import pypandoc
@@ -10,10 +10,9 @@ try:
 except (IOError, ImportError):
     long_description = ''
 
-
 setup(
     name='cn-zipline',
-    version='0.33',
+    version='0.34',
     description='china zipline bundles',
     long_description=long_description,
     author='Jie Wang',
@@ -26,10 +25,14 @@ setup(
         ],
     },
 
+    data_files=[
+        (distutils.sysconfig.get_python_lib() + "/cn_zipline/lib", ['cn_zipline/lib/tdx_api.pyd']),
+    ],
+
     install_requires=[
         'tables',
         'numpy',
-        'zipline',
+        'zipline-live',
         'pytdx',
         'cn-treasury_curve',
         'cn-stock-holidays',
