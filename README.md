@@ -53,6 +53,11 @@ python2.7或者python3.5，尽量使用较新版本的Anaconda。旧版本的在
     
 将`cn_zipline/extension.py`拷贝至zipline的数据目录,默认为`~/.zipline`
 
+
+实盘
+----------
+实盘部分代码正在开发中，请参考[issue](https://github.com/JaysonAlbert/cn_zipline/issues/2)
+
  
 使用
 ----------
