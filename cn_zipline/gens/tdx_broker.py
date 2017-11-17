@@ -20,6 +20,7 @@ from .type import *
 import datetime
 from logbook import Logger
 import pandas as pd
+from tdx.engine import Engine
 from abc import ABCMeta, abstractmethod, abstractproperty
 import abc
 
@@ -33,14 +34,18 @@ class TdxBroker(Broker):
         self._client = client
         self.currency = 'RMB'
         self._subscribed_assets = []
+        self._bars = {}
+        self._bars_update_dt = None
+        self._mkt_client = Engine(auto_retry=True,best_ip=True)
+        self._mkt_client.connect()
 
         super(self.__class__, self).__init__()
 
     def subscribe_to_market_data(self, asset):
-        raise NotImplemented
+        # TODO fix me subcribe_to_market_data
         if asset not in self.subscribed_assets:
             # remove str() cast to have a fun debugging journey
-            self._client.subscribe_to_market_data(str(asset.symbol))
+            # self._client.subscribe_to_market_data(str(asset.symbol))
             self._subscribed_assets.append(asset)
 
     @property
@@ -209,7 +214,7 @@ class TdxBroker(Broker):
             dt=pd.to_datetime(transaction.dt),  # TODO timezone
             price=transaction.price,
             order_id=transaction.order_id,
-            commission=transaction.commission
+            commission=transaction.commission,
         )
 
     @property
