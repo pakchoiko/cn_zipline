@@ -45,6 +45,18 @@ python2.7或者python3.5，尽量使用较新版本的Anaconda。旧版本的在
 
 `deactivate py35`
 
+分支
+----------
+#### `master`:
+包含了基本的回测功能，下单撮合使用下一bar的close价（ricequant可选当前bar的close和下一bar的open）
+
+#### `open_order`:
+下单撮合使用下一bar的open价
+
+#### `zipline-live`:
+支持实盘功能，正在开发中，详情见[实盘issue](https://github.com/JaysonAlbert/cn_zipline/issues/2)
+
+
 安装
 ----------
 
